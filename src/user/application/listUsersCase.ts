@@ -1,6 +1,6 @@
-import { UserRepository } from "../domain/repositories/userRepository";
+import { UserRepository } from "../domain/repositories/UserRepository";
 
-export class DeleteUserUseCase {
+export class ListUsersCase {
     constructor(readonly userRepository: UserRepository) {}
 
     async execute(): Promise<void> {

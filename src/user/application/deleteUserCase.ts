@@ -1,10 +1,10 @@
 import { User } from "../domain/entities/User";
-import { UserRepository } from "../domain/repositories/userRepository";
+import { UserRepository } from "../domain/repositories/UserRepository";
 
-export class DeleteUserUseCase {
+export class DeleteUserCase {
     constructor(readonly userRepository: UserRepository) {}
 
-    async execute(user: User): Promise<void> {
-        await this.userRepository.delete(user);
+    async execute(id: String): Promise<void> {
+        await this.userRepository.delete(id);
     }
 }

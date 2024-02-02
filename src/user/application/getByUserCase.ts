@@ -1,5 +1,5 @@
 import { User } from "../domain/entities/User";
-import { UserRepository } from "../domain/repositories/userRepository";
+import { UserRepository } from "../domain/repositories/UserRepository";
 
 export class GetUserUseCase {
     constructor(readonly userRepository: UserRepository) {}
@@ -12,7 +12,7 @@ export class GetUserUseCase {
         return this.userRepository.findByEmail(email);
     }
 
-    async executeById(id: number): Promise<User | null> {
+    async executeById(id: string): Promise<User | null> {
         return this.userRepository.findById(id);
     }
 }

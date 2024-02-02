@@ -7,7 +7,8 @@ export class UpdateUserController {
 
     async execute(req: Request, res: Response) {
         const data = req.body;
-        let userData = new User(data.id, data.username, data.email, data.password, data.status);
+        const { id } = req.params;
+        let userData = new User(parseInt(id), data.username, data.email, data.password, data.status);
         try {
             const user = await this.updateUserCase.execute(
                 userData

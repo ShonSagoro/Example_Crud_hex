@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { MongoClient, MongoClientOptions, Collection } from "mongodb";
+import { MongoClient, MongoClientOptions, Collection, Db } from "mongodb";
 import { Signale } from "signale";
 
 dotenv.config();

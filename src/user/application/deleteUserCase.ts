@@ -4,7 +4,7 @@ import { UserRepository } from "../domain/repositories/UserRepository";
 export class DeleteUserCase {
     constructor(readonly userRepository: UserRepository) {}
 
-    async execute(id: String): Promise<void> {
+    async execute(id: number): Promise<void> {
         await this.userRepository.delete(id);
     }
 }

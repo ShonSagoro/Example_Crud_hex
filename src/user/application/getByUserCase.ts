@@ -12,7 +12,7 @@ export class GetByUserCase {
         return this.userRepository.findByEmail(email);
     }
 
-    async executeById(id: string): Promise<User | null> {
+    async executeById(id: number): Promise<User | null> {
         return this.userRepository.findById(id);
     }
 }

@@ -8,7 +8,7 @@ export class MysqlUserRepository implements UserRepository {
         const params: any[] = [username];
         try {
             const [result]: any = await query(sql, params);
-            return new User(result[0].id, result[0].username, result[0].email, result[0].password, result[0].status);
+            return new User(result[0].id, result[0].username, result[0].email, "-", result[0].status);
         } catch (error) {
             return null;
         }
@@ -18,32 +18,38 @@ export class MysqlUserRepository implements UserRepository {
         const params: any[] = [email];
         try {
             const [result]: any = await query(sql, params);
-            return new User(result[0].id, result[0].username, result[0].email, result[0].password, result[0].status);
+            return new User(result[0].id, result[0].username, result[0].email, "-", result[0].status);
         } catch (error) {
             return null;
         }
     }
-    async findById(id: string): Promise<User | null> {
+    async findById(id: number): Promise<User | null> {
         const sql = `SELECT * FROM users WHERE id = ?`;
         const params: any[] = [id];
         try {
             const [result]: any = await query(sql, params);
-            return new User(result[0].id, result[0].username, result[0].email, result[0].password, result[0].status);
+            return new User(result[0].id, result[0].username, result[0].email, "-", result[0].status);
         } catch (error) {
             return null;
         }
     }
     async save(user: User): Promise<User | null> {
+        const existingUser = await this.findByEmail(user.email);
+        if (existingUser) {
+            throw new Error("The user exists with the same email.");
+        }
+    
         let sql = `INSERT INTO users (username, email, password, status) VALUES (?,?,?,?)`;
         let params = [user.username, user.email, user.password, user.status];
+        
         try {
-            await query(sql, params);
-            return user;
+            const [result]: any = await query(sql, params);
+            return new User(result.insertId, user.username, user.email, "-", user.status);
         } catch (error) {
             return null;
         }
     }
-    async delete(id: string): Promise<void> {
+    async delete(id: number): Promise<void> {
         let sql = `DELETE FROM users WHERE id = ?`;
         let params = [id];
         try {
@@ -66,7 +72,7 @@ export class MysqlUserRepository implements UserRepository {
         let sql = `SELECT * FROM users`;
         try {
             const [result]: any = await query(sql, []);
-            return result.map((user: any) => new User(user.id, user.username, user.email, user.password, user.status));
+            return result.map((user: any) => new User(user.id, user.username, user.email, "-", user.status));
         } catch (error) {
             return null;
         }

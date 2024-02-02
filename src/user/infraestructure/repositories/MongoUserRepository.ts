@@ -1,12 +1,18 @@
 import { collection } from "../../../database/mongodb";
 import { User } from "../../domain/entities/User";
 import { UserRepository } from "../../domain/repositories/UserRepository";
+import { ObjectId } from 'mongodb';
 
 export class MongoDBUserRepository implements UserRepository {
+    async nextId(): Promise<number> {
+        const lastDocument = await collection.findOne({}, { sort: { id: -1 } });
+        return lastDocument ? lastDocument.id + 1 : 1;
+    }
+
     async findByUsername(username: string): Promise<User | null> {
         try {
             const result = await collection.findOne({ username });
-            return result ? new User(result.id, result.username, result.email, result.password, result.status) : null;
+            return result ? new User(result.id, result.username, result.email, "-", result.status) : null;
         } catch (error) {
             return null;
         }
@@ -15,16 +21,16 @@ export class MongoDBUserRepository implements UserRepository {
     async findByEmail(email: string): Promise<User | null> {
         try {
             const result = await collection.findOne({ email });
-            return result ? new User(result.id, result.username, result.email, result.password, result.status) : null;
+            return result ? new User(result.id, result.username, result.email, "-", result.status) : null;
         } catch (error) {
             return null;
         }
     }
 
-    async findById(id: string): Promise<User | null> {
+    async findById(id: number): Promise<User | null> {
         try {
             const result = await collection.findOne({ id });
-            return result ? new User(result.id, result.username, result.email, result.password, result.status) : null;
+            return result ? new User(result.id, result.username, result.email, "-", result.status) : null;
         } catch (error) {
             return null;
         }
@@ -32,6 +38,8 @@ export class MongoDBUserRepository implements UserRepository {
 
     async save(user: User): Promise<User | null> {
         try {
+            let id = await this.nextId();
+            user.id = id;
             await collection.insertOne(user);
             return user;
         } catch (error) {
@@ -39,7 +47,7 @@ export class MongoDBUserRepository implements UserRepository {
         }
     }
 
-    async delete(id: string): Promise<void> {
+    async delete(id: number): Promise<void> {
         try {
             await collection.deleteOne({ id });
         } catch (error) {
@@ -59,7 +67,8 @@ export class MongoDBUserRepository implements UserRepository {
     async list(): Promise<User[] | null> {
         try {
             const result = await collection.find().toArray();
-            return result.map(user => new User(user.id, user.username, user.email, user.password, user.status));
+            console.log(result);
+            return result.map(user => new User(user.id, user.uuid, user.username, user.email, user.status));
         } catch (error) {
             return null;
         }

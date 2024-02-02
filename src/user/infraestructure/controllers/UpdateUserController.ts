@@ -3,7 +3,7 @@ import { UpdateUserUseCase } from "../../application/UpdateUserCase";
 import { User } from "../../domain/entities/User";
 
 export class UpdateUserController {
-    constructor(readonly updateUserCase: UpdateUserCase) { }
+    constructor(readonly updateUserCase: UpdateUserUseCase) { }
 
     async execute(req: Request, res: Response) {
         const data = req.body;

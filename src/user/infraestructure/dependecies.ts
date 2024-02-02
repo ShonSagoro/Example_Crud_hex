@@ -11,10 +11,10 @@ import GetByIdController from "./controllers/GetByIdController";
 import GetByUsernameController from "./controllers/GetByUsernameController";
 import { UpdateUserController } from "./controllers/UpdateUserController";
 import { ListUsersController } from "./controllers/ListUsersController";
-// import { MysqlUserRepository } from "./repositories/MysqlUserRepository";
-import { MongoDBUserRepository } from "./repositories/MongoUserRepository";
+import { MysqlUserRepository } from "./repositories/MysqlUserRepository";
+// import { MongoDBUserRepository } from "./repositories/MongoUserRepository";
 
-export const databaseRepository = new MongoDBUserRepository();
+export const databaseRepository = new MysqlUserRepository();
 
 export const createUserUseCase = new CreateUserCase(databaseRepository);
 export const getUserUseCase = new GetByUserCase(databaseRepository);

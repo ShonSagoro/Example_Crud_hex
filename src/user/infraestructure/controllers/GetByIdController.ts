@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import {GetUserCase} from '../../application/GetByUserCase';
+import {GetByUserCase} from '../../application/GetByUserCase';
 
 export default class GetByIdController {
-    constructor(readonly getByUserCase: GetUserCase) { }
+    constructor(readonly getByUserCase: GetByUserCase) { }
     
     async execute(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
         try {
-            const user = await this.getByUserCase.executeById(id);
+            const user = await this.getByUserCase.executeById(parseInt(id));
 
             if (user) {
                 res.status(200).json(user);

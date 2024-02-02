@@ -1,5 +1,5 @@
 import { validate } from "class-validator";
-import { ValidatableEntity } from "../validations/validatable";
+import { ValidatableEntity } from "./Validatable";
 
 export class Validator<T extends ValidatableEntity> {
     constructor(private entity: T) {}

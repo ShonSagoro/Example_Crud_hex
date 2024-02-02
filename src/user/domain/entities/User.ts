@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ValidatableEntity } from "../validations/validatable";
+import { ValidatableEntity } from "../validations/Validatable";
 // import { IsNotEmpty } from "class-validator";
 
 export class User implements ValidatableEntity {

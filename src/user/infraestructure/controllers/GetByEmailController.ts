@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import {GetUserCase} from '../../application/GetByUserCase';
+import {GetByUserCase} from '../../application/GetByUserCase';
 
 export default class GetByEmailController {
-    constructor(readonly getByUserCase: GetUserCase) { }
+    constructor(readonly getByUserCase: GetByUserCase) { }
     
     async execute(req: Request, res: Response): Promise<void> {
         const { email } = req.params;

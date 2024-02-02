@@ -1,6 +1,7 @@
 import { CreateUserCase } from "../application/CreateUserCase";
-import { GetUserCase } from "../application/GetByUserCase";
-import { UpdateUserCase } from "../application/UpdateUserCase";
+import { GetByUserCase } from "../application/GetByUserCase";
+// import { UpdateUserCase } from "../application/UpdateUserCase";
+import { UpdateUserUseCase } from "../application/UpdateUserCase";
 import { DeleteUserCase } from "../application/DeleteUserCase";
 import { ListUsersCase } from "../application/ListUsersCase";
 import { CreateUserController } from "./controllers/CreateUserController";
@@ -16,8 +17,8 @@ import { MongoDBUserRepository } from "./repositories/MongoUserRepository";
 export const databaseRepository = new MongoDBUserRepository();
 
 export const createUserUseCase = new CreateUserCase(databaseRepository);
-export const getUserUseCase = new GetUserCase(databaseRepository);
-export const updateUserUseCase = new UpdateUserCase(databaseRepository);
+export const getUserUseCase = new GetByUserCase(databaseRepository);
+export const updateUserUseCase = new UpdateUserUseCase(databaseRepository);
 export const deleteUserUseCase = new DeleteUserCase(databaseRepository);
 export const listUsersCase = new ListUsersCase(databaseRepository);
 

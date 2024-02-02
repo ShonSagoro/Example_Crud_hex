@@ -1,7 +1,7 @@
 import { User } from "../domain/entities/User";
 import { UserRepository } from "../domain/repositories/UserRepository";
 
-export class GetUserUseCase {
+export class GetByUserCase {
     constructor(readonly userRepository: UserRepository) {}
 
     async executeByUsername(username: string): Promise<User | null> {

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UpdateUserCase } from "../../application/UpdateUserCase";
+import { UpdateUserUseCase } from "../../application/UpdateUserCase";
 import { User } from "../../domain/entities/User";
 
 export class UpdateUserController {

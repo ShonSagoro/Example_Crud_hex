@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsnd --respawn app.ts",
+    "migration_sql": "ts-node src/user/infraestructure/migrations/mysq_migrations/generateMigrations.ts",
+    "migration_sqlite": "ts-node src/user/infraestructure/migrations/sqlite_migrations/generateMigrations.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -31,6 +33,8 @@
     "nodemon": "^3.0.3",
     "reflect-metadata": "^0.2.1",
     "signale": "^1.4.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "uuid": "^9.0.1"
   }
 }

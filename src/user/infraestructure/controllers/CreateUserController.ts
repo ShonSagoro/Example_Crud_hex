@@ -1,12 +1,17 @@
 import { Request, Response } from "express";
 import { CreateUserCase } from "../../application/CreateUserCase";
 import { User } from "../../domain/entities/User";
+import { EncryptService } from "../../domain/services/EncriptServices";
+import { EmailService } from "../../domain/services/EmailServices";
 
 export class CreateUserController {
-    constructor(readonly CreateUserCase: CreateUserCase) { }
+
+    constructor(readonly CreateUserCase: CreateUserCase, readonly emailService: EmailService, readonly encryptionService: EncryptService) { 
+    }
 
     async execute(req: Request, res: Response) {
         const data = req.body;
+        data.password = await this.encryptionService.execute(data.password);
         let userData = new User(  
             parseInt(data.id),
             data.username,
@@ -17,13 +22,17 @@ export class CreateUserController {
         try {
             const user = await this.CreateUserCase.execute(userData);
             console.log(user)
+
             if (user) {
+                const verificationUrl = `http://localhost:3000/users/activate/${user.uuid}`;
+                await this.emailService.sendEmail(user.email, "VERITY", `por favor verifiquse aqui: ${verificationUrl}`);
                 res.status(200).send({
                     status: "success",
                     data: {
                         id: user.id,
                         username: user.username,
-                        email: user.email
+                        email: user.email,
+                        uuid: user.uuid,
                     },
                 });
             } else {

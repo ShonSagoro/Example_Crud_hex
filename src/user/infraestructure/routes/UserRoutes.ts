@@ -7,4 +7,5 @@ export function setupUserRoutes(app: Express) {
     app.get('/users/:id', getByIdController.execute.bind(getByIdController));
     app.put('/users/:id', updateUserController.execute.bind(updateUserController));
     app.delete('/users/:id', deleteUserController.execute.bind(deleteUserController));
+    app.get('/users/activate/:uuid', createUserController.execute.bind(createUserController));
 }

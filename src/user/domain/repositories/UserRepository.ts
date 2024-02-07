@@ -10,4 +10,5 @@ export interface UserRepository {
     list(): Promise<User[]|null>;
     activate(uuid:string):Promise<void>;
     login (email:string, password:string):Promise<User|null>; 
+    logout (id:number):Promise<void>;
 }

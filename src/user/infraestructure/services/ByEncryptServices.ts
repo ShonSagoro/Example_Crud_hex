@@ -9,7 +9,7 @@ export class ByEncryptServices implements EncryptService {
         return await bcrypt.hash(data, saltRounds);
     }
 
-    async compare(data: any, hash: any): Promise<any> {
+    async compare(data: any, hash: any): Promise<boolean> {
         return await bcrypt.compare(data, hash);
     }
 }

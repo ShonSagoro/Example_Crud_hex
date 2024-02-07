@@ -24,7 +24,7 @@ export class CreateUserController {
             console.log(user)
 
             if (user) {
-                const verificationUrl = `http://localhost:3000/users/activate/${user.uuid}`;
+                const verificationUrl = `http://${process.env.HOST_SERVER}:${process.env.PORT_SERVER}/users/activate/${user.uuid}`;
                 await this.emailService.sendEmail(user.email, "VERITY", `por favor verifiquse aqui: ${verificationUrl}`);
                 res.status(200).send({
                     status: "success",

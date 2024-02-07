@@ -1,6 +1,5 @@
 import { CreateUserCase } from "../application/CreateUserCase";
 import { GetByUserCase } from "../application/GetByUserCase";
-// import { UpdateUserCase } from "../application/UpdateUserCase";
 import { UpdateUserUseCase } from "../application/UpdateUserCase";
 import { DeleteUserCase } from "../application/DeleteUserCase";
 import { ListUsersCase } from "../application/ListUsersCase";
@@ -19,6 +18,9 @@ import {SqliteUserRepository} from "./repositories/SqliteUserRepository";
 import { NodemailerEmailService } from "./services/NodemailerEmailService";
 import {  EncryptService} from "../domain/services/EncriptServices";
 import { ByEncryptServices } from "./services/ByEncryptServices";
+import { JWTAuthService } from "./services/JWTAuthServices";
+import { LoginUserCase } from "../application/LoginUserCase";
+import { LoginUserController } from "./controllers/LoginUserController";
 export const databaseRepository = new SqliteUserRepository();
 
 export const createUserUseCase = new CreateUserCase(databaseRepository);
@@ -27,8 +29,11 @@ export const updateUserUseCase = new UpdateUserUseCase(databaseRepository);
 export const deleteUserUseCase = new DeleteUserCase(databaseRepository);
 export const listUsersCase = new ListUsersCase(databaseRepository);
 export const activateUserCase = new ActivateUserCase(databaseRepository);
+export const loginUseCase = new LoginUserCase(databaseRepository);
 export const nodemailerEmailService = new NodemailerEmailService();
+
 export const encryptionService = new ByEncryptServices();
+export const authService = new JWTAuthService();
 
 
 export const createUserController = new CreateUserController(createUserUseCase, nodemailerEmailService, encryptionService);
@@ -39,3 +44,4 @@ export const getByEmailController = new GetByEmailController(getUserUseCase);
 export const updateUserController = new UpdateUserController(updateUserUseCase);
 export const listUsersController = new ListUsersController(listUsersCase);
 export const activateUserController = new ActivateUserController(activateUserCase);
+export const loginUserController = new LoginUserController(loginUseCase, encryptionService, authService);

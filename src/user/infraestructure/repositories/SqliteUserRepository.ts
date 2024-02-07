@@ -5,9 +5,26 @@ import { UserRepository } from '../../domain/repositories/UserRepository';
 import { v4 as uuidv4 } from 'uuid';
 
 export class SqliteUserRepository implements UserRepository {
-    login(email: string, password: string): Promise<User | null> {
-        throw new Error('Method not implemented.');
+    logout(id: number): Promise<void> {
+        console.log("ya no estas logeao");
+        return Promise.resolve();
     }
+    async login(email: string, password: string): Promise<User | null> {
+        const sql = `SELECT * FROM users WHERE email = ?`;
+        const params: any[] = [email];
+        try{
+            const result: any = await db.all(sql, params);
+            if(result.length > 0){
+                const user = new User(result[0].id, result[0].username, result[0].email, result[0].password, result[0].status);
+                return user;
+            }
+            return null;
+        }catch(error){
+            return null;
+        }
+
+    }
+
     async activate(uuid: string): Promise<void> {
         const sql = `SELECT * FROM users WHERE uuid = ?`;
         const params: any[] = [uuid];

@@ -1,4 +1,5 @@
 import * as sqlite3 from 'sqlite3';
+import * as path from 'path';
 import { open, Database } from 'sqlite';
 
 import * as fs from 'fs';
@@ -7,8 +8,9 @@ let db: Database;
  
 async function connectToSQLite() {
     try {
+        const filename=path.resolve(__dirname, './sqlite/example.db')
         db = await open({
-            filename: './src/database/sqlite/example.db',
+            filename,
             driver: sqlite3.Database,
         });
 
@@ -34,8 +36,12 @@ async function runMigrationScript(filename: string) {
         console.error(`Error al ejecutar el script de migración '${filename}': ${error}`);
     }
 }
-connectToSQLite();
 
-runMigrationScript('./src/user/infraestructure/migrations/sqlite_migrations/user_up.sql');
+const start =async () => {
+    await connectToSQLite();
 
+    await runMigrationScript('./src/user/infraestructure/migrations/sqlite_migrations/user_up.sql');   
+}
+
+start()
 export { db };

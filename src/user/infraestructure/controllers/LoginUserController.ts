@@ -1,4 +1,4 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import { LoginUserCase } from "../../application/LoginUserCase";
 import { EncryptService } from "../../domain/services/EncriptServices";
 import { AuthService } from "../../domain/services/AuthServices";
@@ -8,8 +8,11 @@ export class LoginUserController {
 
     async execute(req: Request, res: Response) {
         const data = req.body;
+        console.log("logeandome");
         try {
+            console.log("logeandome3");
             let user = await this.loginUserCase.execute(data.email, data.password);
+            console.log("logeandome2");
             if (user === null) {
                 res.status(401).send({
                     status: "error",
@@ -26,13 +29,16 @@ export class LoginUserController {
                         "token": token
                     }
                 });
+            }else{
+                res.status(401).send({
+                    status: "error",
+                    data: "El usuario no existe o la contraseña es incorrecta.",
+                });
+            
             }
         } catch (error) {
-            res.status(204).send({
-                status: "error",
-                data: "Ha ocurrido un error durante su petición.",
-                msg: error,
-            });
+            res.status(500).json({ error: 'Internal server error' });
         }
+        console.log("no");
     }
 }

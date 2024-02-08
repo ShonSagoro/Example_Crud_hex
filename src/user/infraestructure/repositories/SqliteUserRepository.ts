@@ -10,10 +10,13 @@ export class SqliteUserRepository implements UserRepository {
         return Promise.resolve();
     }
     async login(email: string, password: string): Promise<User | null> {
+        console.log("llegue");
         const sql = `SELECT * FROM users WHERE email = ?`;
         const params: any[] = [email];
         try{
+            console.log("llegue");
             const result: any = await db.all(sql, params);
+            console.log(result);
             if(result.length > 0){
                 const user = new User(result[0].id, result[0].username, result[0].email, result[0].password, result[0].status);
                 return user;
@@ -73,9 +76,12 @@ export class SqliteUserRepository implements UserRepository {
     }
     async save(user: User): Promise<User | null> {
         const existingUser = await this.findByEmail(user.email);
+        console.log("YA LLEGUE")
         if (existingUser) {
+            console.log("Me gui")
             throw new Error("The user exists with the same email.");
         }
+
         const newUuid = uuidv4();
 
         let sql = `INSERT INTO users (uuid, username, email, password, status) VALUES (?,?,?,?,?)`;
@@ -83,8 +89,10 @@ export class SqliteUserRepository implements UserRepository {
 
         try {
             const result: any = await db.run(sql, params);
+            console.log(result);
             return new User(result.lastID, user.username, user.email, "-", user.status);
         } catch (error) {
+            console.log("MORI");
             return null;
         }
     }

@@ -6,23 +6,21 @@ import { EmailService } from "../../domain/services/EmailServices";
 
 export class CreateUserController {
 
-    constructor(readonly CreateUserCase: CreateUserCase, readonly emailService: EmailService, readonly encryptionService: EncryptService) { 
+    constructor(readonly CreateUserCase: CreateUserCase, readonly emailService: EmailService, readonly encryptionService: EncryptService) {
     }
 
     async execute(req: Request, res: Response) {
         const data = req.body;
         data.password = await this.encryptionService.execute(data.password);
-        let userData = new User(  
+        let userData = new User(
             parseInt(data.id),
             data.username,
             data.email,
             data.password,
-            data.status
+            "INACTIVE"        
         )
         try {
             const user = await this.CreateUserCase.execute(userData);
-            console.log(user)
-
             if (user) {
                 const verificationUrl = `http://${process.env.HOST_SERVER}:${process.env.PORT_SERVER}/users/activate/${user.uuid}`;
                 await this.emailService.sendEmail(user.email, "VERITY", `por favor verifiquse aqui: ${verificationUrl}`);

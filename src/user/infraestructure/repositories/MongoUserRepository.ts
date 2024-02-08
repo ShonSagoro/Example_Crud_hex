@@ -9,32 +9,35 @@ import jwt from 'jsonwebtoken';
  * MongoDBUserRepository is an implementation of the UserRepository interface that uses MongoDB as the data source.
  */
 export class MongoDBUserRepository implements UserRepository {
-    async activate(uuid: string): Promise<void> {
-        try {
-            await collection.updateOne({ uuid }, { $set: { status: "activate" } });
-        } catch (error) {
-            throw new Error('Error activating user');
-        }
+    logout(token: string): Promise<void> {
+        console.log("DESLOGEAO")
+        return Promise.resolve();
     }
-
     async login(email: string, password: string): Promise<User | null> {
         try {
             const result = await collection.findOne({ email });
-            
             if (result) {
-                const isMatch = bcrypt.compareSync(password, result.password);
-                
-                if (isMatch) {
-                    const token = jwt.sign({ id: result.id }, "your-secret-key"); // Replace "your-secret-key" with your actual secret key
-                    return new User(result.id, result.username, result.email, token, result.status);
-                }
+                const user = new User(result.id, result.username, result.email, result.password, result.status);
+                return user;
             }
-            
             return null;
         } catch (error) {
+            console.error(error);
             return null;
         }
     }
+
+    async activate(uuid: string): Promise<void> {
+        try {
+            const result = await collection.findOne({ uuid });
+            if (result) {
+                await collection.updateOne({ uuid }, { $set: { status: 'active' } });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     async nextId(): Promise<number> {
         const lastDocument = await collection.findOne({}, { sort: { id: -1 } });
         return lastDocument ? lastDocument.id + 1 : 1;

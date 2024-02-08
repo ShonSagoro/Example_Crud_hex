@@ -21,6 +21,7 @@ import { ByEncryptServices } from "./services/ByEncryptServices";
 import { JWTAuthService } from "./services/JWTAuthServices";
 import { LoginUserCase } from "../application/LoginUserCase";
 import { LoginUserController } from "./controllers/LoginUserController";
+import { LogoutUserController } from "./controllers/LogoutUserController";
 export const databaseRepository = new SqliteUserRepository();
 
 export const createUserUseCase = new CreateUserCase(databaseRepository);
@@ -45,3 +46,4 @@ export const updateUserController = new UpdateUserController(updateUserUseCase);
 export const listUsersController = new ListUsersController(listUsersCase);
 export const activateUserController = new ActivateUserController(activateUserCase);
 export const loginUserController = new LoginUserController(loginUseCase, encryptionService, authService);
+export const logoutUserController = new LogoutUserController(authService);

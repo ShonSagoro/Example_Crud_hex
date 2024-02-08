@@ -5,16 +5,16 @@ import { UserRepository } from '../../domain/repositories/UserRepository';
 import { v4 as uuidv4 } from 'uuid';
 
 export class SqliteUserRepository implements UserRepository {
-    logout(id: number): Promise<void> {
-        console.log("ya no estas logeao");
+    logout(token:string): Promise<void> {
+        console.log("DESLOGEAO")
         return Promise.resolve();
     }
     async login(email: string, password: string): Promise<User | null> {
-        console.log("llegue");
         const sql = `SELECT * FROM users WHERE email = ?`;
         const params: any[] = [email];
+        console.log(email);
+        console.log(password);
         try{
-            console.log("llegue");
             const result: any = await db.all(sql, params);
             console.log(result);
             if(result.length > 0){

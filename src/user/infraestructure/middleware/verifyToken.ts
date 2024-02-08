@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { IncomingHttpHeaders } from 'http';
+import { authService } from "../dependecies";
 
-export function verifyToken(req: Request, res: Response, next: NextFunction) {
+export async function verifyToken(req: Request, res: Response, next: NextFunction) {
     const headers = req.headers as IncomingHttpHeaders;
     const authHeader = headers['authorization'];
 
@@ -16,6 +17,9 @@ export function verifyToken(req: Request, res: Response, next: NextFunction) {
         return res.status(500).json({ message: 'JWT secret not configured' });
     }
 
+    if (await authService.isTokenRevoked(token)) {
+        return res.status(401).json({ message: 'Token is revoked' });
+    }
     try {
         jwt.verify(token, process.env.JWT_SECRET);
         next();

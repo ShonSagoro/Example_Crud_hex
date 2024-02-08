@@ -8,11 +8,9 @@ export class LoginUserController {
 
     async execute(req: Request, res: Response) {
         const data = req.body;
-        console.log("logeandome");
         try {
-            console.log("logeandome3");
             let user = await this.loginUserCase.execute(data.email, data.password);
-            console.log("logeandome2");
+            console.log(user);
             if (user === null) {
                 res.status(401).send({
                     status: "error",
@@ -22,12 +20,8 @@ export class LoginUserController {
             } else if (await this.encryptionService.compare(data.password, user.password)) {
                 const id = user.id;
                 const token = this.authService.generateToken(id?.toString() || "");
-                res.json({ token });
                 res.status(200).json({
-                    "status": "success",
-                    "data": {
-                        "token": token
-                    }
+                    "token": token
                 });
             }else{
                 res.status(401).send({
@@ -39,6 +33,5 @@ export class LoginUserController {
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }
-        console.log("no");
     }
 }

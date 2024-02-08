@@ -3,14 +3,33 @@ import { User } from "../../domain/entities/User";
 import { UserRepository } from "../../domain/repositories/UserRepository";
 
 export class MysqlUserRepository implements UserRepository {
-    activate(uuid: string): Promise<void> {
-        throw new Error("Method not implemented.");
+    async login(email: string, password: string): Promise<User | null> {
+        const sql = `SELECT * FROM users WHERE email = ?`;
+        const params: any[] = [email];
+        try {
+            const [result]: any = await query(sql, params);
+            if (result.length > 0) {
+                return new User(result[0].id, result[0].username, result[0].email, "-", result[0].status);
+            }
+            return null;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
     }
-    login(email: string, password: string): Promise<User | null> {
-        throw new Error("Method not implemented.");
+
+    async activate(uuid: string): Promise<void> {
+        const sql = `UPDATE users SET status = 'active' WHERE uuid = ?`;
+        const params: any[] = [uuid];
+        try {
+            await query(sql, params);
+        } catch (error) {
+            console.error(error);
+        }
     }
-    logout(id: number): Promise<void> {
-        throw new Error("Method not implemented.");
+    logout(token: string): Promise<void> {
+        console.log("DESLOGEAO")
+        return Promise.resolve();
     }
     async findByUsername(username: string): Promise<User | null> {
         const sql = `SELECT * FROM users WHERE username = ?`;

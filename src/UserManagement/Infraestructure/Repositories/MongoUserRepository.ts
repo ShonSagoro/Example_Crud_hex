@@ -53,7 +53,7 @@ export class MongoDBUserRepository implements UserInterface {
 
     async sing_in(email: string, password: string, encryptionService: EncryptService, tokenServices: TokenServices): Promise<User | null> {
         try {
-            const result = await this.collection.findOne({ email });
+            const result = await this.collection.findOne({ 'credentials.email': email });
             if (result) {
                 let status = new Status(result.token, result.verifiedAt);
                 let contact = new Contact(result.contact.name, result.contact.lastName, result.contact.phoneNumber);
@@ -89,7 +89,7 @@ export class MongoDBUserRepository implements UserInterface {
 
     async findByEmail(email: string): Promise<User | null> {
         try {
-            const result = await this.collection.findOne({ email });
+            const result = await this.collection.findOne({ 'credentials.email': email });
             if (result) {
                 let status = new Status(result.token, result.verifiedAt);
                 let contact = new Contact(result.contact.name, result.contact.lastName, result.contact.phoneNumber);
@@ -101,24 +101,6 @@ export class MongoDBUserRepository implements UserInterface {
             }       
             return null;
         } catch (error) {
-            return null;
-        }
-    }
-
-    async findById(id: number): Promise<User | null> {
-        try {
-            const result = await this.collection.findOne({ id });
-            if (result) {
-                let status = new Status(result.token, result.verifiedAt);
-                let contact = new Contact(result.contact.name, result.contact.lastName, result.contact.phoneNumber);
-                let credentials = new Credentials(result.credentials.email, result.credentials.password);
-              
-                let user = new User(status, contact, credentials);
-                user.uuid = result.uuid;
-                return user;
-            }       
-            return null;
-            } catch (error) {
             return null;
         }
     }

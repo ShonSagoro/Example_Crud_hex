@@ -23,7 +23,7 @@ import { SingInUserCase } from "../Application/UseCase/SingInUserCase";
 import { SingOutUserCase } from "../Application/UseCase/SingOutUserCase";
 import { TokenServices } from "./Services/TokenServices";
 
-export const databaseRepository = new SqliteUserRepository();
+export const databaseRepository = new MongoDBUserRepository();
 
 export const encriptServices = new ByEncryptServices();
 export const authService = new JWTAuthService();

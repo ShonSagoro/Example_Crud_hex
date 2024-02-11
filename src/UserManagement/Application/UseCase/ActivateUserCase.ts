@@ -5,6 +5,6 @@ export class ActivateUserCase {
     constructor(readonly userInterface: UserInterface) {}
 
     async execute(uuid:string): Promise<void> {
-        await this.userInterface.activate(uuid);
+        await this.userInterface.updateUserVerifiedAt(uuid);
     }
 }

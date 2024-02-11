@@ -48,7 +48,5 @@ async function runMigrationScript(filename: string) {
 }
 
 // Ejecutar la migración 'up'
-runMigrationScript('./src/user/infraestructure/migrations/mysq_migrations/user_up.sql');
+runMigrationScript('./src/UserManagement/Infraestructure/Migrations/mysq_migrations/user_up.sql');
 
-// Puedes descomentar la siguiente línea si deseas ejecutar la migración 'down'
-// runMigrationScript('./src/user/infraestructure/migrations/mysq_migrations/user_down.sql');

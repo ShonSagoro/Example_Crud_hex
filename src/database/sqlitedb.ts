@@ -40,7 +40,7 @@ async function runMigrationScript(filename: string) {
 const start =async () => {
     await connectToSQLite();
 
-    await runMigrationScript('./src/user/infraestructure/migrations/sqlite_migrations/user_up.sql');   
+    await runMigrationScript('./src/UserManagement/Infraestructure/Migrations/sqlite_migrations/user_up.sql');   
 }
 
 start()

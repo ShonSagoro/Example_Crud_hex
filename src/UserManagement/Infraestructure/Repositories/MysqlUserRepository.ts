@@ -14,28 +14,33 @@ export class MysqlUserRepository implements UserInterface {
         const params: any[] = [email];
         try {
             const [result]: any = await query(sql, params);
-            let status = new Status(result[0].token, result[0].verifiedAt);
-            let contact = new Contact(result[0].contact.name, result[0].contact.lastName, result[0].contact.phoneNumber);
-            let credentials = new Credentials(result[0].credentials.email, result[0].credentials.password);
+            let status = new Status("", result[0].verified_at);
+            let contact = new Contact(result[0].name, result[0].lastname, result[0].number_phone);
+            let credentials = new Credentials(result[0].email, result[0].password);
             let user = new User(status, contact, credentials);
             user.uuid = result[0].uuid;
+            console.log(user);
             return user;
         } catch (error) {
+            console.log(error);
             return null;
         }
     }
     async findByUUID(uuid: string): Promise<User | null> {
-        const sql = `SELECT * FROM users WHERE email = ?`;
+        const sql = `SELECT * FROM users WHERE uuid = ?`;
         const params: any[] = [uuid];
         try {
             const [result]: any = await query(sql, params);
-            let status = new Status(result[0].token, result[0].verifiedAt);
-            let contact = new Contact(result[0].contact.name, result[0].contact.lastName, result[0].contact.phoneNumber);
-            let credentials = new Credentials(result[0].credentials.email, result[0].credentials.password);
+            console.log(result);
+            let status = new Status("", result[0].verified_at);
+            let contact = new Contact(result[0].name, result[0].lastname, result[0].number_phone);
+            let credentials = new Credentials(result[0].email, result[0].password);
             let user = new User(status, contact, credentials);
             user.uuid = result[0].uuid;
+            console.log(user);
             return user;
         } catch (error) {
+            console.log(error);
             return null;
         }
     }
@@ -64,16 +69,17 @@ export class MysqlUserRepository implements UserInterface {
         let sql = `SELECT * FROM users`;
         try {
             const [result]: any = await query(sql, []);
-            return result.map((user: { token: string; verifiedAt: Date; contact: { name: string; lastName: string; phoneNumber: string; }; credentials: { email: string; password: string; }; uuid: string; }) => {
-                let status = new Status(user.token, user.verifiedAt);
-                let contact = new Contact(user.contact.name, user.contact.lastName, user.contact.phoneNumber);
-                let credentials = new Credentials(user.credentials.email, user.credentials.password);
-                
-                let newUser = new User(status, contact, credentials);
-                newUser.uuid = user.uuid;
-                
-                return newUser;
+            return result.map((user: { uuid:any, verified_at: any; name: any; lastname: any; number_phone: any; email: any; password: any; }) => {
+                const { verified_at, name, lastname, number_phone, email, password } = user;
+            
+                const status = new Status("",new Date(verified_at));
+                const contact = new Contact(name, lastname, number_phone);
+                const credentials = new Credentials(email, "");
+                const usernew= new User(status, contact, credentials);
+                usernew.uuid = user.uuid;
+                return usernew;
             });
+            
         } catch (error) {
             return null;
         }

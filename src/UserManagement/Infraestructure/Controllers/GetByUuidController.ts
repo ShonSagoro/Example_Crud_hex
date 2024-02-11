@@ -8,7 +8,7 @@ export default class GetByUuidController {
         const { uuid } = req.params;
         try {
             const user = await this.getByUserCase.executeByUUID(uuid);
-
+            console.log(user);
             if (user) {
                 res.status(200).json(user);
             } else {

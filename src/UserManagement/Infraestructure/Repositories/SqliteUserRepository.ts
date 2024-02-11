@@ -13,9 +13,9 @@ export class SqliteUserRepository implements UserInterface {
         const params: any[] = [email];
         try {
             const [result]: any = await db.all(sql, params);
-            let status = new Status(result[0].token, result[0].verifiedAt);
-            let contact = new Contact(result[0].contact.name, result[0].contact.lastName, result[0].contact.phoneNumber);
-            let credentials = new Credentials(result[0].credentials.email, result[0].credentials.password);
+            let status = new Status("", result[0].verified_at);
+            let contact = new Contact(result[0].name, result[0].lastname, result[0].number_phone);
+            let credentials = new Credentials(result[0].email, result[0].password);
             let user = new User(status, contact, credentials);
             user.uuid = result[0].uuid;
             return user;
@@ -28,9 +28,9 @@ export class SqliteUserRepository implements UserInterface {
         const params: any[] = [uuid];
         try {
             const [result]: any = await db.all(sql, params);
-            let status = new Status(result[0].token, result[0].verifiedAt);
-            let contact = new Contact(result[0].contact.name, result[0].contact.lastName, result[0].contact.phoneNumber);
-            let credentials = new Credentials(result[0].credentials.email, result[0].credentials.password);
+            let status = new Status("", result[0].verified_at);
+            let contact = new Contact(result[0].name, result[0].lastname, result[0].number_phone);
+            let credentials = new Credentials(result[0].email, result[0].password);
             let user = new User(status, contact, credentials);
             user.uuid = result[0].uuid;
             return user;
@@ -62,15 +62,15 @@ export class SqliteUserRepository implements UserInterface {
         let sql = `SELECT * FROM users`;
         try {
             const result: any = await db.all(sql, []);
-            return result.map((user: { token: string; verifiedAt: Date; name: string; lastName: string; phoneNumber: string; email: string; password: string; uuid: string; }) => {
-                let status = new Status(user.token, user.verifiedAt);
-                let contact = new Contact(user.name, user.lastName, user.phoneNumber);
-                let credentials = new Credentials(user.email, user.password);
-                
-                let newUser = new User(status, contact, credentials);
-                newUser.uuid = user.uuid;
-                
-                return newUser;
+            return result.map((user: { uuid:any, verified_at: any; name: any; lastname: any; number_phone: any; email: any; password: any; }) => {
+                const { verified_at, name, lastname, number_phone, email, password } = user;
+            
+                const status = new Status("",new Date(verified_at));
+                const contact = new Contact(name, lastname, number_phone);
+                const credentials = new Credentials(email, "");
+                const usernew= new User(status, contact, credentials);
+                usernew.uuid = user.uuid;
+                return usernew;
             });
         } catch (error) {
             return null;
@@ -142,127 +142,3 @@ export class SqliteUserRepository implements UserInterface {
         return Promise.resolve();
     }
 }
-
-/**
- * 
- * 
- *     logout(token:string): Promise<void> {
-        console.log("DESLOGEAO")
-        return Promise.resolve();
-    }
-    async login(email: string, password: string): Promise<User | null> {
-        const sql = `SELECT * FROM users WHERE email = ?`;
-        const params: any[] = [email];
-        console.log(email);
-        console.log(password);
-        try{
-            const result: any = await db.all(sql, params);
-            console.log(result);
-            if(result.length > 0){
-                const user = new User(result[0].id, result[0].username, result[0].email, result[0].password, result[0].status);
-                return user;
-            }
-            return null;
-        }catch(error){
-            return null;
-        }
-
-    }
-
-    async activate(uuid: string): Promise<void> {
-        const sql = `SELECT * FROM users WHERE    = ?`;
-        const params: any[] = [uuid];
-        try {
-            const result: any = await db.all(sql, params);
-            if (result.length > 0) {
-                const sql = `UPDATE users SET status = 'active' WHERE uuid = ?`;
-                const params: any[] = [uuid];
-                await db.run(sql, params);
-            }
-        } catch (error) {
-          
-        }
-
-    }
-    async findByUsername(username: string): Promise<User | null> {
-        const sql = `SELECT * FROM users WHERE username = ?`;
-        const params: any[] = [username];
-        try {
-            const result: any = await db.all(sql, params);
-            return new User(result[0].id, result[0].username, result[0].email, "-", result[0].status);
-        } catch (error) {
-            return null;
-        }
-    }
-    async findByEmail(email: string): Promise<User | null> {
-        const sql = `SELECT * FROM users WHERE email = ?`;
-        const params: any[] = [email];
-        try {
-            const result: any = await db.all(sql, params);
-            return new User(result[0].id, result[0].username, result[0].email, "-", result[0].status);
-        } catch (error) {
-            return null;
-        }
-    }
-    async findById(id: number): Promise<User | null> {
-        const sql = `SELECT * FROM users WHERE id = ?`;
-        const params: any[] = [id];
-        try {
-            const result: any = await db.all(sql, params);
-            console.log(result);
-            return new User(result[0].id, result[0].username, result[0].email, "-", result[0].status);
-        } catch (error) {
-            return null;
-        }
-    }
-    async save(user: User): Promise<User | null> {
-        const existingUser = await this.findByEmail(user.email);
-        console.log("YA LLEGUE")
-        if (existingUser) {
-            console.log("Me gui")
-            throw new Error("The user exists with the same email.");
-        }
-
-        const newUuid = uuidv4();
-
-        let sql = `INSERT INTO users (uuid, username, email, password, status) VALUES (?,?,?,?,?)`;
-        let params = [newUuid, user.username, user.email, user.password, user.status];
-
-        try {
-            const result: any = await db.run(sql, params);
-            console.log(result);
-            return new User(result.lastID, user.username, user.email, "-", user.status);
-        } catch (error) {
-            console.log("MORI");
-            return null;
-        }
-    }
-    async delete(id: number): Promise<void> {
-        let sql = `DELETE FROM users WHERE id = ?`;
-        let params = [id];
-        try {
-            await db.run(sql, params);
-        } catch (error) {
-            throw new Error('Error deleting user');
-        }
-    }
-    async update(user: User): Promise<User | null> {
-        let sql = `UPDATE users SET username = ?, email = ?, password = ?, status = ? WHERE id = ?`;
-        let params = [user.username, user.email, user.password, user.status, user.id];
-        try {
-            await db.run(sql, params);
-            return user;
-        } catch (error) {
-            return null;
-        }   
-    }
-    async list(): Promise<User[] | null> {
-        let sql = `SELECT * FROM users`;
-        try {
-            const result: any = await db.all(sql, []);
-            return result.map((user: any) => new User(user.id, user.username, user.email, "-", user.status));
-        } catch (error) {
-            return null;
-        }
-    }
- */
